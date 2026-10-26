@@ -19,7 +19,7 @@ export type Perfil = {
 export const perfis: Perfil[] = [
     {
         id: 'aluno1',
-        nome: 'Diego Leão',
+        nome: 'Diego Leao',
         foto: require('../../assets/Randy Marsh.png'),
         bio: ['Olá, me chamo Diego e sou estudante de Análise e Desenvolvimento de Sistemas na Fatec Itu'],
         email: 'diegolvf.profissional@gmail.com',
@@ -52,5 +52,5 @@ export const textoHome = {
     tituloLinha1: 'Eleve seu negócio digital a outro nível',
     tituloDestaque: 'com um Front-end de qualidade!',
     descricao:
-        'Para protteger o mundo da devastação! Para unir as pessoas de nossa nação Para denunciar os males da verdade e do amor. Equipe Rocket decolando na velocidade da luz!',
+        'Para proteger o mundo da devastação! Para unir as pessoas de nossa nação Para denunciar os males da verdade e do amor. Equipe Rocket decolando na velocidade da luz!',
 };
