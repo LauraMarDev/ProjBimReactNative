@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Pressable, Text, StyleSheet } from 'react-native';
-import { colors } from '../theme/colors';
-import { fonts } from '../theme/fonts';
+import { useTheme } from '../theme/LoadTheme';
+import { Colors } from '../theme/colors';
 
 type Props = { title: string; onPress: () => void };
 
 export default function PrimaryButton({ title, onPress }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => criarStyles(colors), [colors]);
+
   return (
     <Pressable
       onPress={onPress}
@@ -16,20 +19,15 @@ export default function PrimaryButton({ title, onPress }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: colors.buttonBackground,
-    borderRadius: 0,
-    paddingVertical: 16,
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  pressed: { opacity: 0.8 },
-  text: {
-    fontFamily: fonts.subtitle,
-    color: colors.buttonText,
-    fontSize: 16,
-    letterSpacing: 2,
-    textTransform: 'uppercase',
-  },
-});
+const criarStyles = (colors: Colors) =>
+  StyleSheet.create({
+    button: {
+      backgroundColor: colors.btnBackground,
+      borderRadius: 2,
+      paddingVertical: 14,
+      alignItems: 'center',
+      marginBottom: 12,
+    },
+    pressed: { opacity: 0.8 },
+    text: { color: colors.btnColor, fontSize: 16, fontWeight: '600' },
+  });

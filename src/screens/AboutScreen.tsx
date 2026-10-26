@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ScrollView, View, Text, Alert, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -9,15 +9,16 @@ import ProfileImage from '../components/ProfileImage';
 import PrimaryButton from '../components/PrimaryButton';
 import SocialLinks from '../components/SocialLinks';
 import { getPerfil } from '../data/perfis';
-import { colors } from '../theme/colors';
-import { fonts } from '../theme/fonts';
+import { textos } from '../data/textos';
+import { useTheme } from '../theme/LoadTheme';
+import { Colors } from '../theme/colors';
 import { RootStackParamList } from '../types/navigation';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Sobre'>;
 
-// Tela única reutilizada pelos dois integrantes:
-// o conteúdo vem de src/data/perfis.ts, escolhido pelo id recebido na navegação
 export default function AboutScreen({ route, navigation }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => criarStyles(colors), [colors]);
   const perfil = getPerfil(route.params.id);
 
   return (
@@ -37,59 +38,53 @@ export default function AboutScreen({ route, navigation }: Props) {
           ))}
 
           <PrimaryButton
-            title="Entre em contato!"
+            title={textos.botaoContato}
             onPress={() => Alert.alert('Entre em contato', perfil.email)}
           />
 
-          <Text style={styles.sectionTitle}>Minhas redes:</Text>
+          <Text style={styles.sectionTitle}>{textos.tituloRedesSobre}</Text>
           <SocialLinks redes={perfil.redes} />
-
-          <PrimaryButton title="Voltar" onPress={() => navigation.goBack()} />
+          
+          <PrimaryButton
+            title={textos.botaoVoltar}
+            onPress={() => navigation.goBack()}
+          />
         </View>
-
         <Footer />
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.background },
-  scroll: { flexGrow: 1 },
-  content: { paddingHorizontal: 24 },
-  title: {
-    fontFamily: fonts.title,
-    color: colors.primary,
-    fontSize: 24,
-    letterSpacing: 2,
-    marginBottom: 4,
-    textTransform: 'uppercase',
-  },
-  name: {
-    fontFamily: fonts.subtitle,
-    color: colors.textMuted,
-    fontSize: 16,
-    letterSpacing: 4,
-    marginBottom: 16,
-    textTransform: 'uppercase',
-  },
-  paragraph: {
-    fontFamily: fonts.body,
-    color: colors.text,
-    fontSize: 18,
-    lineHeight: 24,
-    letterSpacing: 1,
-    marginBottom: 18,
-    textTransform: 'uppercase',
-  },
-  sectionTitle: {
-    fontFamily: fonts.title,
-    color: colors.primary,
-    fontSize: 16,
-    letterSpacing: 2,
-    textAlign: 'center',
-    marginTop: 8,
-    marginBottom: 12,
-    textTransform: 'uppercase',
-  },
-});
+const criarStyles = (colors: Colors) =>
+  StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.background },
+    scroll: { flexGrow: 1 },
+    content: { paddingHorizontal: 24 },
+    title: {
+      color: colors.text,
+      fontSize: 24,
+      fontWeight: '800',
+      marginBottom: 4,
+    },
+    name: {
+      color: colors.primary,
+      fontSize: 16,
+      fontWeight: '600',
+      marginBottom: 16,
+    },
+    paragraph: {
+      color: colors.textMuted,
+      fontSize: 14,
+      lineHeight: 22,
+      marginBottom: 18,
+    },
+    sectionTitle: {
+      color: colors.text,
+      fontSize: 20,
+      fontWeight: '700',
+      textAlign: 'center',
+      marginTop: 8,
+      marginBottom: 12,
+    },
+  });

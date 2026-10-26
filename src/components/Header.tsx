@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors } from '../theme/colors';
-import { fonts } from '../theme/fonts';
+import { useTheme } from '../theme/LoadTheme';
+import { Colors } from '../theme/colors';
 
 export default function Header() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => criarStyles(colors), [colors]);
+
   return (
     <View style={styles.container}>
       <Text style={styles.logo}>DEV.SPOT</Text>
@@ -13,20 +16,20 @@ export default function Header() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-    gap: 4,
-    paddingTop: 16,
-    paddingBottom: 24,
-  },
-  logo: {
-    fontFamily: fonts.title,
-    color: colors.primary,
-    fontSize: 22,
-    letterSpacing: 4,
-    marginTop: 6,
-  },
+const criarStyles = (colors: Colors) => StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      justifyContent: 'center',
+      gap: 4,
+      paddingTop: 16,
+      paddingBottom: 24,
+    },
+    logo: {
+      color: colors.text,
+      fontSize: 22,
+      fontWeight: '700',
+      letterSpacing: 1,
+      marginTop: 6,
+    },
 });

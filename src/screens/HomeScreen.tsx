@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import {View, Text, Switch, Pressable, Alert, ScrollView, Image, StyleSheet} from 'react-native';
+import React, { useMemo, useState } from 'react';
+import { ScrollView, View, Text, Switch, Pressable, Alert, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -9,16 +9,18 @@ import ProfileImage from '../components/ProfileImage';
 import PrimaryButton from '../components/PrimaryButton';
 import SocialLinks from '../components/SocialLinks';
 import { perfis, textoHome } from '../data/perfis';
-import { colors } from '../theme/colors';
-import { fonts } from '../theme/fonts'
+import { textos } from '../data/textos';
+import { useTheme } from '../theme/LoadTheme';
+import { Colors } from '../theme/colors';
 import { RootStackParamList } from '../types/navigation';
-import foto from '../../assets/LogoDev_app.png'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 export default function HomeScreen({ navigation }: Props) {
+  const { colors, isAmarelo, alternarTema } = useTheme();
+  const styles = useMemo(() => criarStyles(colors), [colors]);
+
   const [ligado, setLigado] = useState(false);
-  // integrante cujas redes aparecem na seção "Acesse nossas redes"
   const [selecionado, setSelecionado] = useState(perfis[0].id);
   const perfil = perfis.find((p) => p.id === selecionado) ?? perfis[0];
 
@@ -31,8 +33,7 @@ export default function HomeScreen({ navigation }: Props) {
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView contentContainerStyle={styles.scroll}>
         <Header />
-
-        <Image source={foto} style={styles.imgLogo} resizeMode="contain"/>
+        <ProfileImage source={perfis[0].foto} />
 
         <View style={styles.content}>
           <Text style={styles.title}>{textoHome.tituloLinha1}</Text>
@@ -41,32 +42,42 @@ export default function HomeScreen({ navigation }: Props) {
           </Text>
           <Text style={styles.description}>{textoHome.descricao}</Text>
 
-          {/* Um botão "Sobre mim" para cada integrante */}
           {perfis.map((p) => (
             <PrimaryButton
               key={p.id}
-              title={`Sobre mim – ${p.nome}`}
+              title={textos.botaoSobre(p.nome)}
               onPress={() => navigation.navigate('Sobre', { id: p.id })}
             />
           ))}
           <PrimaryButton
-            title="Entre em contato!"
+            title={textos.botaoContato}
             onPress={() => Alert.alert('Entre em contato')}
           />
 
-          <Text style={styles.sectionTitle}>Acesse nossas redes:</Text>
+          <Text style={styles.sectionTitle}>{textos.tituloRedesHome}</Text>
 
+          {/* Switch original do PDF (Alert) */}
           <View style={styles.switchRow}>
-            <Text style={styles.switchLabel}>Alterar visualização</Text>
+            <Text style={styles.switchLabel}>{textos.switchVisualizacao}</Text>
             <Switch
               value={ligado}
               onValueChange={alternar}
-              trackColor={{ false: '#3a3a3a', true: colors.primary }}
+              trackColor={{ false: colors.switchOff, true: colors.primary }}
               thumbColor="#FFFFFF"
             />
           </View>
 
-          {/* Seletor de integrante */}
+          {/* Novo switch: alterna o tema */}
+          <View style={styles.switchRow}>
+            <Text style={styles.switchLabel}>{textos.switchTema}</Text>
+            <Switch
+              value={isAmarelo}
+              onValueChange={alternarTema}
+              trackColor={{ false: colors.switchOff, true: colors.primary }}
+              thumbColor="#FFFFFF"
+            />
+          </View>
+
           <View style={styles.chips}>
             {perfis.map((p) => {
               const ativo = p.id === selecionado;
@@ -83,6 +94,7 @@ export default function HomeScreen({ navigation }: Props) {
               );
             })}
           </View>
+
           <SocialLinks redes={perfil.redes} />
         </View>
         <Footer />
@@ -91,83 +103,54 @@ export default function HomeScreen({ navigation }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.background },
-  scroll: { flexGrow: 1 },
-  content: { paddingHorizontal: 24 },
-  title: {
-    fontFamily: fonts.title,
-    color: colors.primary,
-    fontSize: 20,
-    lineHeight: 32,
-    letterSpacing: 1,
-    textTransform: 'uppercase',
-    textAlign:'center'
-  },
-  highlight: {
-    fontFamily: fonts.subtitle,
-    color: colors.textMuted,
-    fontSize: 14,
-    letterSpacing: 2,
-    marginBottom: 16,
-    textAlign: 'center'
-  },
-  imgLogo: {
-    width: 150,
-    aspectRatio: 2752 / 1536,
-    alignSelf: 'center',
-    marginBottom: 24,
-  },
-  description: {
-    fontFamily: fonts.body,
-    color: colors.text,
-    fontSize: 18,
-    lineHeight: 24,
-    letterSpacing: 1,
-    marginBottom: 24,
-    textTransform: 'uppercase',
-  },
-  sectionTitle: {
-    fontFamily: fonts.title,
-    color: colors.primary,
-    fontSize: 16,
-    letterSpacing: 2,
-    textAlign: 'center',
-    marginTop: 16,
-    marginBottom: 12,
-    textTransform: 'uppercase',
-  },
-  switchRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  switchLabel: {
-    fontFamily: fonts.body,
-    color: colors.text,
-    fontSize: 16,
-    letterSpacing: 1,
-    textTransform: 'uppercase',
-  },
-  chips: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 10,
-    marginBottom: 16,
-  },
-  chip: {
-    borderWidth: 1.5,
-    borderColor: colors.primary,
-    borderRadius: 0,
-    paddingVertical: 6,
-    paddingHorizontal: 16,
-  },
-  chipActive: { backgroundColor: colors.buttonBackground },
-  chipText: {
-    fontFamily: fonts.subtitle,
-    color: colors.primary,
-    letterSpacing: 1,
-  },
-  chipTextActive: { color: colors.buttonText },
-});
+const criarStyles = (colors: Colors) =>
+  StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.background },
+    scroll: { flexGrow: 1 },
+    content: { paddingHorizontal: 24 },
+    title: {
+      color: colors.text,
+      fontSize: 24,
+      fontWeight: '800',
+      lineHeight: 32,
+    },
+    highlight: { color: colors.primary, marginBottom: 16 },
+    description: {
+      color: colors.textMuted,
+      fontSize: 14,
+      lineHeight: 22,
+      marginBottom: 24,
+    },
+    sectionTitle: {
+      color: colors.text,
+      fontSize: 20,
+      fontWeight: '700',
+      textAlign: 'center',
+      marginTop: 16,
+      marginBottom: 12,
+    },
+    switchRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 12,
+    },
+    switchLabel: { color: colors.textMuted, fontSize: 14 },
+    chips: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      gap: 10,
+      marginTop: 4,
+      marginBottom: 16,
+    },
+    chip: {
+      borderWidth: 1.5,
+      borderColor: colors.primary,
+      borderRadius: 2,
+      paddingVertical: 6,
+      paddingHorizontal: 16,
+    },
+    chipActive: { backgroundColor: colors.primary },
+    chipText: { color: colors.primary, fontWeight: '600' },
+    chipTextActive: { color: colors.buttonText },
+  });
