@@ -33,14 +33,14 @@ export const perfis: Perfil[] = [
     {
         id: 'aluno2',
         nome: 'Laura Marques',
-        foto: { uri: 'https://i.pravatar.cc/500?img=47' },
-        bio: ['Parágrafo 1...', 'Parágrafo 2...', 'Parágrafo 3...'],
-        email: 'aluno1@email.com',
+        foto: { uri: '../../assets/foto-laura.jpeg' },
+        bio: ['Oi! Eu sou a Laura, estudante de Análise e Desenvolvimento de Sistemas da FATEC Itu.'],
+        email: 'laura.marques.dev@gmail.com',
         redes: {
-            github: 'https://github.com/aluno1',
-            linkedin: 'https://www.linkedin.com/in/aluno1',
-            //instagram: 'https://www.instagram.com/aluno1',
-            //twitch: 'https://www.twitch.tv/aluno1',
+            github: 'https://github.com/LauraMarDev',
+            linkedin: 'https://www.linkedin.com/in/laura-marques-51748b293',
+            //instagram: 'https://www.instagram.com/aluno2',
+            //twitch: 'https://www.twitch.tv/aluno',
         },
     },
 ];
